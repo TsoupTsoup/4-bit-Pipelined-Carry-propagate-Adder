@@ -4,3 +4,6 @@ As the name suggests, it's a 4-bit adder built using carry propagate architectur
 The design is using a synchronous FA as a cell. Its code is found in the "Synchronous FA code" file.
 
 In this specific VHDL code I've manually written all the different connections between the FA stages, and also all of the connections needed to delay the input bits and the output bits so that the pipeline works properly. Although this is the "dumb" approach, it's not too labor intensive in the case of a 4 bit adder. I might make a more elegant implementation (that's also scalable, so you can have an N-bit adder) some time in the future.
+
+
+<img width="1572" height="725" alt="Screenshot 2026-03-18 191504" src="https://github.com/user-attachments/assets/0613aecd-5554-464a-b898-463d8829f2c8" />
