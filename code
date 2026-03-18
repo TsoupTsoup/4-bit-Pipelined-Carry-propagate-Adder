@@ -1,0 +1,59 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+
+entity adder_4_bit_pipeline is
+    Port ( A : in STD_LOGIC_VECTOR (3 downto 0);
+           B : in STD_LOGIC_VECTOR (3 downto 0);
+           Cin : in STD_LOGIC;
+           Clk : in STD_LOGIC;
+           Cout : out STD_LOGIC;
+           Sum : out STD_LOGIC_VECTOR (3 downto 0));
+end adder_4_bit_pipeline;
+
+
+
+architecture hybrid of adder_4_bit_pipeline is
+
+    component Synchronous_FA is
+        Port ( A : in STD_LOGIC;
+           B : in STD_LOGIC;
+           Cin : in STD_LOGIC;
+           Cout : out STD_LOGIC;
+           Sum : out STD_LOGIC;
+           Clk : in STD_LOGIC);
+     end component;
+
+    signal Cout0,Cout1,Cout2 : std_logic;
+    signal Sumd1 : std_logic;
+    signal Sumd2 : std_logic_vector(1 downto 0);
+    signal Sumd3 : std_logic_vector(2 downto 0);
+    signal Ad1 : std_logic_vector(2 downto 0);
+    signal Bd1 : std_logic_vector(2 downto 0);
+    signal Ad2 : std_logic_vector(1 downto 0);
+    signal Bd2 : std_logic_vector(1 downto 0);
+    signal Ad3,Bd3 : std_logic;
+
+begin
+    
+    FA1: Synchronous_FA port map (A=>A(0),B=>B(0),Cin=>Cin,Clk=>Clk,Cout=>Cout0,Sum=>Sumd1);
+    FA2: Synchronous_FA port map (A=>Ad1(0),B=>Bd1(0),Cin=>Cout0,Clk=>Clk,Cout=>Cout1,Sum=>Sumd2(1));
+    FA3: Synchronous_FA port map (A=>Ad2(0),B=>Bd2(0),Cin=>Cout1,Clk=>Clk,Cout=>Cout2,Sum=>Sumd3(2));
+    FA4: Synchronous_FA port map (A=>Ad3,B=>Bd3,Cin=>Cout2,Clk=>Clk,Cout=>Cout,Sum=>Sum(3));
+    
+    pathing: process(Clk)
+    begin
+        if(rising_edge(Clk)) then
+            Ad1<=A(3 downto 1);
+            Bd1<=B(3 downto 1);
+            Ad2<=Ad1(2 downto 1);
+            Bd2<=Bd1(2 downto 1);
+            Sumd2(0)<=Sumd1;
+            Ad3<=Ad2(1);
+            Bd3<=Bd2(1);
+            Sumd3(1 downto 0)<=Sumd2;
+            Sum(2 downto 0)<=Sumd3;
+        end if;
+    end process pathing;
+            
+end hybrid;
