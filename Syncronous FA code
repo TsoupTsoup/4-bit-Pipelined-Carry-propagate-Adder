@@ -1,0 +1,36 @@
+--This is the cell used for the pipelined adder. 
+--It's simply a FA that only updates its outputs (Sum/CarryOut) during a clock rising edge.
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+
+entity Synchronous_FA is
+    Port ( A : in STD_LOGIC;
+           B : in STD_LOGIC;
+           Cin : in STD_LOGIC;
+           Cout : out STD_LOGIC;
+           Sum : out STD_LOGIC;
+           Clk : in STD_LOGIC);
+end Synchronous_FA;
+
+architecture behavioral of Synchronous_FA is
+    
+    signal ABC: std_logic_vector(2 downto 0);
+begin
+
+    ABC <= A & B & Cin;
+    
+    counting: process(Clk)
+    begin
+        if(rising_edge(clk)) then
+            if(ABC="111") then Cout <= '1'; Sum <= '1';
+            elsif(ABC="110" or ABC="101" or ABC="011") then Cout <= '1'; Sum <='0';
+            elsif(ABC="000") then Cout <= '0'; Sum <='0';
+            else Cout <= '0'; Sum <= '1';
+            end if;
+         end if;
+     end process counting;
+            
+end behavioral;
